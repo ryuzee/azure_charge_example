@@ -1,6 +1,6 @@
 require 'optparse'
 require 'terminal-table'
-require './lib/azure_charge'
+require './lib/azassu'
 
 search_range = [:yesterday, :this_month, :last_month]
 option={}
@@ -29,21 +29,21 @@ end
 end
 
 # Get API Token
-token = AzureCharge.api_token(option[:application_id], option[:client_secret], option[:tenant_id])
+token = Azassu::Token.get(option[:application_id], option[:client_secret], option[:tenant_id])
 
 # Get Usage
-usages = AzureCharge.usages(token, option[:subscription_id], option[:range])
+usages = Azassu::Charge.usages(token, option[:subscription_id], option[:range])
 
 # Get RateCard
-meters = AzureCharge.rate_meters(token, option[:subscription_id], option[:offer_durable_id])
+meters = Azassu::Charge.rate_meters(token, option[:subscription_id], option[:offer_durable_id])
 
 # Combine Result
-usages_with_rate = AzureCharge::usages_with_rate(usages, meters)
+usages_with_rate = Azassu::Charge.usages_with_rate(usages, meters)
 
 ## Output result
 total_cost = 0
 rows = []
-rows << AzureCharge::Usage.header_array
+rows << Azassu::Charge::Usage.header_array
 rows << :separator
 usages_with_rate.each do |u|
   rows << u.data_array
