@@ -26,11 +26,10 @@ end
 # Get API Token
 token = Azassu::Token.get(option[:application_id], option[:client_secret], option[:tenant_id])
 
-resources = Azassu::Metrics.get_resources(token, option[:subscription_id])
-puts resources
-exit
-
-# Get Usage
-metrics = Azassu::Metrics.get(token, option[:subscription_id], option[:resource_group], option[:resource_provider_ns], option[:resource_type], option[:resource_name], option[:filter])
-
+# Get Metrics (Easiest Way)
+metrics = Azassu::Metrics.get_by_name(token, option[:subscription_id], option[:resource_name], option[:filter])
 puts metrics
+
+# Get Metrics
+# metrics = Azassu::Metrics.get(token, option[:subscription_id], option[:resource_group], option[:resource_provider_ns], option[:resource_type], option[:resource_name], option[:filter])
+# puts metrics

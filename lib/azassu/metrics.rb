@@ -22,6 +22,15 @@ module Azassu
       end
     end
 
+    def self.get_by_name(token, subscription_id, resource_name, filter)
+      resources = self.get_resources(token, subscription_id)
+      return false unless resources
+      target = resources.select {|h| h["name"] == "#{resource_name}"}.first
+      params = target["id"].split("/")
+      return false unless target
+      return self.get(token, subscription_id, params[4], params[6], params[7], params[8], filter)
+    end
+
     def self.get_resources(token, subscription_id)
       api_version = "2016-06-01"
       url = "https://management.azure.com/subscriptions/#{subscription_id}/resources?api-version=#{api_version}"
@@ -34,7 +43,7 @@ module Azassu
         case response.code
         when 200
           json = JSON.parse(response)
-          json
+          json["value"]
         else
           false
         end
