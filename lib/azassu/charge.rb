@@ -1,8 +1,3 @@
-require 'rest-client'
-require 'json'
-require 'erb'
-include ERB::Util
-
 module Azassu
   module Charge
     class Usage
