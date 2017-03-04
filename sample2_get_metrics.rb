@@ -13,10 +13,12 @@ OptionParser.new do |opt|
   opt.on('-s', '--subscription_id=VALUE')    {|v| option[:subscription_id] = v}
   opt.on('-t', '--tenant_id=VALUE')          {|v| option[:tenant_id] = v}
   opt.on('-y', '--resource_type=VALUE')      {|v| option[:resource_type] = v}
+  opt.on('-l', '--filter_type=VALUE')        {|v| option[:filter_type] = v}
+  opt.on('-g', '--aggregation_type=VALUE')   {|v| option[:aggregation_type] = v}
   opt.parse!(ARGV)
 end
 
-[:application_id, :client_secret, :subscription_id, :resource_group, :resource_provider_ns, :resource_name].each do |k|
+[:application_id, :client_secret, :subscription_id, :resource_name].each do |k|
   if option[k].nil? or option[k].empty?
     puts "Option must be specified... Type ruby main.rb -h"
     exit
@@ -25,6 +27,18 @@ end
 
 # Get API Token
 token = Azassu::Token.get(option[:application_id], option[:client_secret], option[:tenant_id])
+
+unless option[:filter_type]
+  option[:filter_type] = 'Percentage CPU'
+end
+
+unless option[:aggregation_type]
+  option[:aggregation_type] = 'Average'
+end
+
+unless option[:filter]
+  option[:filter] = Azassu::Metrics.generate_5mins_filter(option[:filter_type], option[:aggregation_type])
+end
 
 # Get Metrics (Easiest Way)
 metrics = Azassu::Metrics.get_by_name(token, option[:subscription_id], option[:resource_name], option[:filter])
