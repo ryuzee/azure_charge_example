@@ -1,3 +1,10 @@
+#!/usr/bin/env ruby
+
+# [NOTE] set variable as follows before running script
+# ```
+# RUBYGEMS_GEMDEPS=-
+# ```
+
 require 'optparse'
 require 'terminal-table'
 require './lib/azassu'
