@@ -9,10 +9,7 @@ module Azassu
         'client_secret' => client_secret,
         'resource' => "https://management.azure.com/"
       }
-      headers = {
-        "Content-Type" => "application/x-www-form-urlencoded"
-      }
-      RestClient.post(url, payload, headers){ |response, request, result, &block|
+      RestClient.post(url, payload){ |response, request, result, &block|
         case response.code
         when 200
           json = JSON.parse(response)
