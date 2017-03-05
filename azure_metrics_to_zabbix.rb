@@ -1,10 +1,3 @@
-#!/usr/bin/env ruby
-
-# [NOTE] set variable as follows before running script
-# ```
-# RUBYGEMS_GEMDEPS=-
-# ```
-
 require 'optparse'
 require './lib/azassu'
 require 'zabbix_send'

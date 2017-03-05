@@ -1,27 +1,55 @@
-# Azure / Example for Retrieving Charge Data
+# Azure / Operation Scripts
 
-This sample program retrieves your Azure usage and rate via API, merges them and calculate the ammount of charge.
+This is a sample program that supports operation of Azure environment.
 
 ## Preparation
 
-You need to prepare those variables below.
+You need to prepare at least those variables as follows.
 
 - AppId
-- OfferDurableId
 - SubscriptionId
 - TenantId
 - client secret
 
 ## Command example
 
+### Retrieve Usage Data
+
 ```
-ruby main.rb \
+bundle exec ruby sample1_get_usage.rb \
   -a b6b07347-3720-4166-8718-3669ba816c04 \
   -c your_password \
   -d MS-AZR-0003P \
   -t 79ed722a-68ax-4229-82ja-55d0646c288e \
   -s 56a58e9b-a41d-3464-9f85-5a8b037f650b \
   -r this_month
+```
+
+### Retrieve Metrics
+
+This command retrieves latest `Percentage CPU` metrics for the resource 'k8s-agent-7F62479-0'
+
+```
+bundle exec ruby sample2_get_metrics.rb \
+  -a b6b07347-3720-4166-8718-3669ba816c04 \
+  -c your_password \
+  -m 'k8s-agent-7F626479-0' \
+  -t 79ed722a-68ax-4229-82ja-55d0646c288e \
+  -s 56a58e9b-a41d-3464-9f85-5a8b037f650b \
+```
+
+### Send Metrics to Zabbix
+
+```
+bundle exec ruby azure_metrics_to_zabbix.rb \
+  -a b6b07347-3720-4166-8718-3669ba816c04 \
+  -c your_password \
+  -m 'k8s-agent-7F626479-0' \
+  -t 79ed722a-68ax-4229-82ja-55d0646c288e \
+  -s 56a58e9b-a41d-3464-9f85-5a8b037f650b \
+  -l 'Percentage CPU' \
+  -g 'Average' \
+  -z 'zabbix.example.com'
 ```
 
 ## Technical Information
