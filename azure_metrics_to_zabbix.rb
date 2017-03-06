@@ -13,10 +13,11 @@ OptionParser.new do |opt|
   opt.on('-l', '--filter_type=VALUE')        { |v| option[:filter_type] = v }
   opt.on('-g', '--aggregation_type=VALUE')   { |v| option[:aggregation_type] = v }
   opt.on('-z', '--zabbix_host=VALUE')        { |v| option[:zabbix_host] = v }
+  opt.on('-k', '--trapper_key=VALUE')        { |v| option[:trapper_key] = v }
   opt.parse!(ARGV)
 end
 
-[:application_id, :client_secret, :subscription_id, :resource_name, :zabbix_host].each do |k|
+[:application_id, :client_secret, :subscription_id, :resource_type, :resource_name, :zabbix_host].each do |k|
   if option[k].nil? || option[k].empty?
     puts 'Option must be specified... Type ruby main.rb -h'
     exit
@@ -43,6 +44,8 @@ metrics.each do |v|
   break
 end
 
+option[:trapper_key] = option[:filter_type].gsub(' ', '_').gsub('/', '_') unless option[:trapper_key]
+
 # Send data to Zabbix
 sender = ZabbixSend::Sender.new
-sender.send(option[:zabbix_host], option[:resource_name], option[:filter_type].gsub(' ', '_').gsub('/', '_'), value)
+sender.send(option[:zabbix_host], option[:resource_name], option[:trapper_key], value)
