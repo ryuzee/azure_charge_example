@@ -48,4 +48,4 @@ option[:trapper_key] = option[:filter_type].gsub(' ', '_').gsub('/', '_') unless
 
 # Send data to Zabbix
 sender = ZabbixSend::Sender.new
-sender.send(option[:zabbix_host], option[:resource_name], option[:trapper_key], value)
+sender.send(option[:zabbix_host], option[:resource_name].gsub('/', '_'), option[:trapper_key], value)
