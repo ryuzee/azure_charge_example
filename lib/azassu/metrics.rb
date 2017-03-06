@@ -9,7 +9,6 @@ module Azassu
         'Content-type' => 'application/json',
         'Authorization' => "Bearer #{token}"
       }
-
       RestClient.get(url, headers) do |response, _request, _result|
         case response.code
         when 200
@@ -21,13 +20,30 @@ module Azassu
       end
     end
 
-    def self.get_by_name(token, subscription_id, resource_name, filter)
+    def self.get_by_name(token, subscription_id, resource_name, type, filter)
       resources = get_resources(token, subscription_id)
       return false unless resources
-      target = resources.select { |h| h['name'] == resource_name.to_s }.first
-      params = target['id'].split('/')
+      target = resources.select { |h| h['name'] == resource_name.to_s && h['type'] == type.to_s }.first
       return false unless target
-      get(token, subscription_id, params[4], params[6], params[7], params[8], filter)
+      self.get_by_url(token ,target['id'], filter)
+    end
+
+    def self.get_by_url(token, url, filter)
+      api_version = '2016-06-01'
+      url = "https://management.azure.com#{url}/providers/microsoft.insights/metrics?$filter=#{url_encode(filter)}&api-version=#{api_version}"
+      headers = {
+        'Content-type' => 'application/json',
+        'Authorization' => "Bearer #{token}"
+      }
+      RestClient.get(url, headers) do |response, _request, _result|
+        case response.code
+        when 200
+          json = JSON.parse(response)
+          json['value'][0]['data']
+        else
+          false
+        end
+      end
     end
 
     def self.get_resources(token, subscription_id)
